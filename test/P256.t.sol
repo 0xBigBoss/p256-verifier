@@ -39,13 +39,7 @@ contract P256Test is Test {
 
         bytes32 hash = 0x267f9ea080b54bbea2443dff8aa543604564329783b6a515c6663a691c555490;
 
-        bool res = P256.verifySignatureAllowMalleability(
-            hash,
-            r,
-            s,
-            pubKey[0],
-            pubKey[1]
-        );
+        bool res = P256.verifySignatureAllowMalleability(hash, r, s, pubKey[0], pubKey[1]);
         assertEq(res, true);
 
         res = P256.verifySignature(hash, r, s, pubKey[0], pubKey[1]);
@@ -59,13 +53,7 @@ contract P256Test is Test {
 
         bytes32 hash = 0x267f9ea080b54bbea2443dff8aa543604564329783b6a515c6663a691c555490;
 
-        bool res = P256.verifySignatureAllowMalleability(
-            hash,
-            r,
-            s,
-            pubKey[0],
-            pubKey[1]
-        );
+        bool res = P256.verifySignatureAllowMalleability(hash, r, s, pubKey[0], pubKey[1]);
         assertEq(res, true);
 
         res = P256.verifySignature(hash, r, s, pubKey[0], pubKey[1]);
@@ -78,42 +66,24 @@ contract P256Test is Test {
 
         bytes32 hash = 0x267f9ea080b54bbea2443dff8aa543604564329783b6a515c6663a691c555490;
 
-        uint gasBefore = gasleft();
-        bool res = P256.verifySignatureAllowMalleability(
-            hash,
-            r,
-            s,
-            pubKey[0],
-            pubKey[1]
-        );
+        uint256 gasBefore = gasleft();
+        bool res = P256.verifySignatureAllowMalleability(hash, r, s, pubKey[0], pubKey[1]);
         assertEq(res, true);
-        uint gasUsedFallback = gasBefore - gasleft();
+        uint256 gasUsedFallback = gasBefore - gasleft();
         assert(gasUsedFallback > 100_000); // no precompile, used Solidity implementation
 
         vm.etch(P256.PRECOMPILE, type(FakePrecompile).runtimeCode);
 
         gasBefore = gasleft();
-        res = P256.verifySignatureAllowMalleability(
-            hash,
-            r,
-            s,
-            pubKey[0],
-            pubKey[1]
-        );
+        res = P256.verifySignatureAllowMalleability(hash, r, s, pubKey[0], pubKey[1]);
         assertEq(res, true);
-        uint gasUsedPrecompile = gasBefore - gasleft();
+        uint256 gasUsedPrecompile = gasBefore - gasleft();
         assert(gasUsedPrecompile < gasUsedFallback); // precompile, used precompile
 
         gasBefore = gasleft();
-        res = P256.verifySignatureAllowMalleability(
-            hash,
-            r + 1,
-            s,
-            pubKey[0],
-            pubKey[1]
-        );
+        res = P256.verifySignatureAllowMalleability(hash, r + 1, s, pubKey[0], pubKey[1]);
         assertEq(res, false);
-        uint gasUsedInvalidSignature = gasBefore - gasleft();
+        uint256 gasUsedInvalidSignature = gasBefore - gasleft();
         assert(gasUsedInvalidSignature > gasUsedFallback); // invalid signature, used precompile and failed, so fall back to Solidity implementation and failed with nearly double gas
     }
 }
