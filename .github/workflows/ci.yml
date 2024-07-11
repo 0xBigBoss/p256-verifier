@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [master, next]
+    branches: [master, next, fjord]
   pull_request:
-    branches: [master, next]
+    branches: [master, next, fjord]
 
 env:
   FOUNDRY_PROFILE: ci
@@ -39,7 +39,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: "20.x"
+          node-version: '20.x'
 
       - run: |
           cd test-vectors
@@ -56,7 +56,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: "20.x"
+          node-version: '20.x'
 
       - run: |
           npm ci
